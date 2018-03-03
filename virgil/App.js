@@ -2,11 +2,13 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 import { StackNavigator } from 'react-navigation';
-import FirstScreen from './FirstScreen';
-import SecondScreen from './SecondScreen';
+import HomeScreen from './HomeScreen';
+import OptionScreen from './OptionScreen';
+import CameraScreen from './CameraScreen';
 
 const Navigation = StackNavigator({
-    First: {screen: FirstScreen},
-    Second: {screen: SecondScreen}
+    Home: {screen: HomeScreen},
+    Options: {screen: OptionScreen},
+    Camera: {screen: CameraScreen}
 });
 export default Navigation;
