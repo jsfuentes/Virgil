@@ -19,6 +19,7 @@ def getSubject(image_url, debug=False):
     print(image_caption)
     return topSubject
 
-# image_url = "http://onpointfresh.com/wp-content/uploads/2016/03/95559ca9a79f7da23522cb702e5eb2e8.jpg"
-# image_url2 = "https://www.fatrabbitcreative.com/images/blog/red.jpg"
-# getSubject(image_url)
+if __name__ == "__main__":
+    image_url = "http://onpointfresh.com/wp-content/uploads/2016/03/95559ca9a79f7da23522cb702e5eb2e8.jpg"
+    image_url2 = "https://www.fatrabbitcreative.com/images/blog/red.jpg"
+    getSubject(image_url)

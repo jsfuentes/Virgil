@@ -30,8 +30,9 @@ def getAudioForText(text, JVM_token):
     audio = response.content
     return audio
 
-# JVM_token = getNewJVMToken()
-# text = "The big red dog jumped over the wall"
-# audio = getAudioForText(text, JVM_token)
-# f = open("sampleTest.mp3", 'wb')
-# f.write(audio)
+if __name__ == "__main__":
+    JVM_token = getNewJVMToken()
+    text = "The big red dog jumped over the wall"
+    audio = getAudioForText(text, JVM_token)
+    f = open("sampleTest.mp3", 'wb')
+    f.write(audio)
