@@ -35,6 +35,7 @@ def getAudioForText(text, JVM_token):
         text + "</voice> </speak>" \
 
     response = requests.post(speech_url, headers=headers, data=data)
+    print(response.headers)
     audio = response.content
     return audio
 
@@ -56,5 +57,5 @@ def generateMotivationQuotes():
         f.close()
 
 if __name__ == "__main__":
-    generateStopFiles()
-    generateMotivationQuotes()
+    JVM = getNewJVMToken()
+    getAudioForText("HELP ME", JVM)

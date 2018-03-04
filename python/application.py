@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, json
+from flask import Flask, jsonify, request, json, Response
 from flask_script import Manager
 from time import time
 import cv2
@@ -7,7 +7,6 @@ import numpy as np
 from PIL import Image
 
 # from flask_cors import CORS, cross_origin
-
 import speech
 import vision
 import screenshot
@@ -50,7 +49,7 @@ def audio():
 
     subject = vision.getSubjectByUrl(img)
     audio = speech.getAudioForText(subject, JVM_TOKEN)
-    return audio
+    return Response(audio, mimetype="audio/mpeg")
 
 @app.route('/api/v1/image', methods=['GET', 'POST'])
 def image():
@@ -63,10 +62,10 @@ def image():
         motivationalInt = random.randint(0,4)
         f = open("../motivation" + str(motivationalInt) + ".mp3", 'r')
         audio = f.read()
-        return audio
+        return Response(audio, mimetype="audio/mpeg")
 
     f = open("helplessImg.jpg", 'wb')
-    f.write(imgFile)
+    f.write(imgFile.decode)
     f.close()
     im = Image.open("helplessImg.jpg")
     pil_image = im.convert('RGB')
@@ -77,7 +76,7 @@ def image():
         print("WATCH OUT")
         f = open("../STOP.mp3", 'r')
         audio = f.read()
-        return audio
+        return Response(audio, mimetype="audio/mpeg")
 
     #JVM lasts for 10 minutes, so make sure its less than 8 minutes old
     if (time() - JVM_CREATION_TIME) > (8 * 60):
@@ -90,7 +89,7 @@ def image():
     # f = open("imgAPI.mp3", 'wb')
     # f.write(audio)
     # f.close()
-    return audio
+    return Response(audio, mimetype="audio/mpeg")
 
 
 #TODO: Take image in format
@@ -110,14 +109,14 @@ def video():
         motivationalInt = random.randint(0,4)
         f = open("../motivation" + str(motivationalInt) + ".mp3", 'r')
         audio = f.read()
-        return audio
+        return Response(audio, mimetype="audio/mpeg")
 
     cv2.imwrite("currentImage.jpg", imgs[0])
     if deep_learning_object_detection_img.colliding("currentImage.jpg", 1000):
         print("WATCH OUT")
         f = open("../STOP.mp3", 'r')
         audio = f.read()
-        return audio
+        return Response(audio, mimetype="audio/mpeg")
 
     #JVM lasts for 10 minutes, so make sure its less than 8 minutes old
     if (time() - JVM_CREATION_TIME) > (8 * 60):
@@ -128,7 +127,7 @@ def video():
     # for img in imgs:
     imgToAudio(imgs[0], "img1.jpg", True, "audio1.mp3")
     audio = imgToAudio(imgs[-1], "img2.jpg", True, "audio2.mp3")
-    return audio
+    return Response(audio, mimetype="audio/mpeg")
 
 # run the app.
 if __name__ == "__main__":
