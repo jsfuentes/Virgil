@@ -4,6 +4,7 @@ from time import time
 import cv2
 import random
 import numpy as np
+from PIL import Image
 
 # from flask_cors import CORS, cross_origin
 
@@ -64,9 +65,14 @@ def image():
         audio = f.read()
         return audio
 
-    f = open("currentImage0.jpg", "wb")
+    f = open("helplessImg.jpg", 'wb')
     f.write(imgFile)
     f.close()
+    im = Image.open("helplessImg.jpg")
+    pil_image = im.convert('RGB')
+    open_cv_image = np.array(pil_image)
+    cv2.imwrite('currentImage0.jpg', open_cv_image)
+
     if deep_learning_object_detection_img.colliding("currentImage0.jpg", 1000):
         print("WATCH OUT")
         f = open("../STOP.mp3", 'r')
