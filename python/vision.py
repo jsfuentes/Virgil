@@ -30,7 +30,6 @@ def getSubjectByImage(binaryImg, debug=False):
     response = requests.post(vision_analyze_url, headers=headers, params=params, data=binaryImg)
     response.raise_for_status()
     analysis = response.json()
-    print(analysis['tags'])
 
     try:
         topSubject = analysis['tags'][0]['name']

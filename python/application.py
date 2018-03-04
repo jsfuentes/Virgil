@@ -2,12 +2,14 @@ from flask import Flask, jsonify, request, json
 from flask_script import Manager
 from time import time
 import cv2
+import random
 
 # from flask_cors import CORS, cross_origin
 
 import speech
 import vision
 import screenshot
+import deep_learning_object_detection_img
 
 app = Flask(__name__)
 # manager = Manager(app)
@@ -21,7 +23,7 @@ def index():
     print(JVM_CREATION_TIME)
     return "<marquee><h1 style='font-size:300px;'> I LOVE YOU </h1></marquee>"
 
-@app.route('/audio')
+@app.route('/audio', methods=['GET', 'POST'])
 def audio():
     global JVM_CREATION_TIME
     global JVM_TOKEN
@@ -56,7 +58,21 @@ def image():
     f = open("currentVideo.mov", 'wb')
     f.write(videoFile)
     f.close()
+
     imgs = screenshot.movToScreenshots("currentVideo.mov", 25, False)
+    if len(imgs) == 0:
+        print("No Img")
+        motivationalInt = random.randint(0,4)
+        f = open("../motivation" + str(motivationalInt) + ".mp3", 'r')
+        audio = f.read()
+        return audio
+
+    cv2.imwrite("currentImage.jpg", imgs[0])
+    if deep_learning_object_detection_img.colliding("currentImage.jpg", 1000):
+        print("WATCH OUT")
+        f = open("../STOP.mp3", 'r')
+        audio = f.read()
+        return audio
 
     #JVM lasts for 10 minutes, so make sure its less than 8 minutes old
     if (time() - JVM_CREATION_TIME) > (8 * 60):
