@@ -32,7 +32,7 @@ def audio():
         JVM_TOKEN = speech.getNewJVMToken()
         JVM_CREATION_TIME = time()
 
-    subject = vision.getSubject(img)
+    subject = vision.getSubjectByUrl(img)
     audio = speech.getAudioForText(subject, JVM_TOKEN)
     return audio
 
