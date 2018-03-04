@@ -26,8 +26,8 @@ def image():
     global JVM_CREATION_TIME
     global JVM_TOKEN
     def imgToAudio(img, imgName, saveAudio=False, audioName="test.mp3"):
-        cv2.imwrite("curImage.jpg", img)
-        img = open("curImage.jpg", 'rb')
+        cv2.imwrite(imgName, img)
+        img = open(imgName, 'rb')
         subject = vision.getSubjectByImage(img)
         audio = speech.getAudioForText(subject, JVM_TOKEN)
         if saveAudio:
@@ -50,7 +50,7 @@ def image():
     # img = "http://onpointfresh.com/wp-content/uploads/2016/03/95559ca9a79f7da23522cb702e5eb2e8.jpg"
     # for img in imgs:
     imgToAudio(imgs[0], "img1.jpg", True, "audio1.mp3")
-    audio = imgToAudio(imgs[5], "img2.jpg", True, "audio2.mp3")
+    audio = imgToAudio(imgs[-1], "img2.jpg", True, "audio2.mp3")
     return audio
 
 # run the app.
