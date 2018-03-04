@@ -10,7 +10,7 @@ import vision
 import screenshot
 
 app = Flask(__name__)
-manager = Manager(app)
+# manager = Manager(app)
 app.config['SECRET_KEY'] = 'hard to guess string'
 
 JVM_TOKEN = speech.getNewJVMToken()
@@ -71,4 +71,4 @@ def image():
 
 # run the app.
 if __name__ == "__main__":
-    manager.run()
+    app.run()
