@@ -3,6 +3,7 @@ from flask_script import Manager
 from time import time
 import cv2
 import random
+import numpy as np
 
 # from flask_cors import CORS, cross_origin
 
@@ -17,6 +18,18 @@ app.config['SECRET_KEY'] = 'hard to guess string'
 
 JVM_TOKEN = speech.getNewJVMToken()
 JVM_CREATION_TIME = time()
+
+# HELPER
+def imgToAudio(img, imgName, saveAudio=False, audioName="test.mp3"):
+    cv2.imwrite(imgName, img)
+    img = open(imgName, 'rb')
+    subject = vision.getSubjectByImage(img)
+    audio = speech.getAudioForText(subject, JVM_TOKEN)
+    if saveAudio:
+        f = open(audioName, 'wb')
+        f.write(audio)
+        f.close()
+    return audio
 
 @app.route('/')
 def index():
@@ -38,21 +51,47 @@ def audio():
     audio = speech.getAudioForText(subject, JVM_TOKEN)
     return audio
 
-#TODO: Take image in format
 @app.route('/api/v1/image', methods=['GET', 'POST'])
 def image():
     global JVM_CREATION_TIME
     global JVM_TOKEN
-    def imgToAudio(img, imgName, saveAudio=False, audioName="test.mp3"):
-        cv2.imwrite(imgName, img)
-        img = open(imgName, 'rb')
-        subject = vision.getSubjectByImage(img)
-        audio = speech.getAudioForText(subject, JVM_TOKEN)
-        if saveAudio:
-            f = open(audioName, 'wb')
-            f.write(audio)
-            f.close()
+
+    imgFile = request.data
+    if not imgFile:
+        print("No Img")
+        motivationalInt = random.randint(0,4)
+        f = open("../motivation" + str(motivationalInt) + ".mp3", 'r')
+        audio = f.read()
         return audio
+
+    f = open("currentImage0.jpg", "wb")
+    f.write(imgFile)
+    f.close()
+    if deep_learning_object_detection_img.colliding("currentImage0.jpg", 1000):
+        print("WATCH OUT")
+        f = open("../STOP.mp3", 'r')
+        audio = f.read()
+        return audio
+
+    #JVM lasts for 10 minutes, so make sure its less than 8 minutes old
+    if (time() - JVM_CREATION_TIME) > (8 * 60):
+        JVM_TOKEN = speech.getNewJVMToken()
+        JVM_CREATION_TIME = time()
+
+    # img = "http://onpointfresh.com/wp-content/uploads/2016/03/95559ca9a79f7da23522cb702e5eb2e8.jpg"
+    subject = vision.getSubjectByImage(imgFile)
+    audio = speech.getAudioForText(subject, JVM_TOKEN)
+    # f = open("imgAPI.mp3", 'wb')
+    # f.write(audio)
+    # f.close()
+    return audio
+
+
+#TODO: Take image in format
+@app.route('/api/v1/video', methods=['GET', 'POST'])
+def video():
+    global JVM_CREATION_TIME
+    global JVM_TOKEN
 
     videoFile = request.data
     f = open("currentVideo.mov", 'wb')
