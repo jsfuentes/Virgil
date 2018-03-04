@@ -65,7 +65,7 @@ def image():
         return Response(audio, mimetype="audio/mpeg")
 
     f = open("helplessImg.jpg", 'wb')
-    f.write(imgFile.decode)
+    f.write(imgFile.decode('base64'))
     f.close()
     im = Image.open("helplessImg.jpg")
     pil_image = im.convert('RGB')
