@@ -19,10 +19,11 @@ def index():
     return "<marquee><h1 style='font-size:300px;'> I LOVE YOU </h1></marquee>"
 
 #TODO: Take image in format
-@app.route('/api/v1/image', methods=['POST'])
+@app.route('/api/v1/image', methods=['GET', 'POST'])
 def image():
     global JVM_CREATION_TIME
     global JVM_TOKEN
+
     # GET THE IMAGE FROM THE ARGUMENTS IN THE FORMAT
     img = "http://onpointfresh.com/wp-content/uploads/2016/03/95559ca9a79f7da23522cb702e5eb2e8.jpg"
     #JVM lasts for 10 minutes, so make sure its less than 8 minutes old
