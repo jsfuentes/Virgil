@@ -2,7 +2,7 @@ import requests
 from secret import VISION_API_KEY
 
 #TODO: Can get face box, maybe go to clothing box
-def getSubject(image_url, debug=False):
+def getSubjectByUrl(image_url, debug=False):
     vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/"
     vision_analyze_url = vision_base_url + "analyze"
 
@@ -17,6 +17,29 @@ def getSubject(image_url, debug=False):
     print(topSubject)
     image_caption = analysis["description"]["captions"][0]["text"].capitalize()
     print(image_caption)
+    return topSubject
+
+def getSubjectByImage(binaryImg, debug=False):
+    vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/"
+    vision_analyze_url = vision_base_url + "analyze"
+
+    headers  = {'Ocp-Apim-Subscription-Key': VISION_API_KEY,
+                'Content-Type': 'application/octet-stream'}
+    params   = {'visualFeatures': 'Description,Tags,Faces'}
+
+    response = requests.post(vision_analyze_url, headers=headers, params=params, data=binaryImg)
+    response.raise_for_status()
+    analysis = response.json()
+    print(analysis['tags'])
+
+    try:
+        topSubject = analysis['tags'][0]['name']
+    except:
+        topSubject = None
+
+    if not topSubject:
+        topSubject = analysis["description"]["captions"][0]["text"].capitalize()
+    print(topSubject)
     return topSubject
 
 if __name__ == "__main__":
