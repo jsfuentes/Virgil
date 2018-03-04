@@ -1,6 +1,14 @@
 import requests
 from secret import SPEECH_API_KEY
 
+STOP_WORDS = ["STOP", "WATCH OUT"]
+MOTIVATION = ["All our dreams can come true if we have the courage to pursue them",
+                "Opportunities don't happen, you create them",
+                "Adventure is out there",
+                "Those who wish to sing, always find a song",
+                "Fortune favours the bold"]
+
+
 #TODO: Only generate JVM Token when needed, maybe have two at a time
 def getNewJVMToken():
     headers  = {'Ocp-Apim-Subscription-Key': SPEECH_API_KEY }
@@ -18,7 +26,7 @@ def getAudioForText(text, JVM_token):
         'Ocp-Apim-Subscription-Key': SPEECH_API_KEY,
         'Authorization': "Bearer " + JVM_token,
         'Content-Type': "application/ssml+xml",
-        'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3',
+        'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3', #maybe do lowest quality audio-16khz-32kbitrate-mono-mp3
         'User-Agent': 'Virgil', # I was told this was required
     }
 
@@ -30,9 +38,23 @@ def getAudioForText(text, JVM_token):
     audio = response.content
     return audio
 
-if __name__ == "__main__":
+def generateStopFiles():
     JVM_token = getNewJVMToken()
-    text = "The big red dog jumped over the wall"
-    audio = getAudioForText(text, JVM_token)
-    f = open("sampleTest.mp3", 'wb')
-    f.write(audio)
+    for word in STOP_WORDS:
+        formatted_word = "<prosody pitch='low' volume='+30.00%' rate='+30.00%'>" + word + "</prosody>"
+        audio = getAudioForText(formatted_word, JVM_token)
+        f = open("_".join(word.split()) + ".mp3", 'wb')
+        f.write(audio)
+        f.close()
+
+def generateMotivationQuotes():
+    JVM_token = getNewJVMToken()
+    for i, word in enumerate(MOTIVATION):
+        audio = getAudioForText(word, JVM_token)
+        f = open("motivation" + str(i) + ".mp3", 'wb')
+        f.write(audio)
+        f.close()
+
+if __name__ == "__main__":
+    generateStopFiles()
+    generateMotivationQuotes()
