@@ -53,6 +53,30 @@ def audio():
 
 @app.route('/api/v1/image', methods=['GET', 'POST'])
 def image():
+    imgFile = request.data
+    if not imgFile:
+        print("No Img")
+        motivationalInt = random.randint(0,4)
+        return jsonify({"text": speech.MOTIVATION[motivationalInt]})
+
+    f = open("helplessImg.jpg", 'wb')
+    f.write(imgFile.decode('base64'))
+    f.close()
+    im = Image.open("helplessImg.jpg")
+    pil_image = im.convert('RGB')
+    open_cv_image = np.array(pil_image)
+    cv2.imwrite('currentImage0.jpg', open_cv_image)
+
+    if deep_learning_object_detection_img.colliding("currentImage0.jpg", 1000):
+        print("WATCH OUT")
+        f = open("../STOP.mp3", 'r')
+        return jsonify({"text": "Stop"})
+
+    subject = vision.getSubjectByImage(imgFile)
+    return jsonify({"text": subject})
+
+@app.route('/api/v1/maudio', methods=['GET', 'POST'])
+def image_maudio():
     global JVM_CREATION_TIME
     global JVM_TOKEN
 
@@ -125,8 +149,8 @@ def video():
 
     # img = "http://onpointfresh.com/wp-content/uploads/2016/03/95559ca9a79f7da23522cb702e5eb2e8.jpg"
     # for img in imgs:
-    imgToAudio(imgs[0], "img1.jpg", True, "audio1.mp3")
-    audio = imgToAudio(imgs[-1], "img2.jpg", True, "audio2.mp3")
+    imgToAudio(imgs[0], "img1.jpg", True, "microsoft.mp3")
+    audio = imgToAudio(imgs[-1], "img2.jpgf", True, "audio2.mp3")
     return Response(audio, mimetype="audio/mpeg")
 
 # run the app.
